@@ -4,62 +4,58 @@ import random
 import pandas
 
 
-def get_data():
-    data = np.loadtxt("data.dat", dtype=np.float64)
-    return data
-
-
-def check_mistake(w, x, y):
-    if y * (np.dot(w, x)) < 0:
-        return True
-    elif y * (np.dot(w, x)) == 0:
-        return True
-    else:
-        return False
+def load_data():
+    return np.loadtxt("data.dat", dtype=np.float64)
 
 
 def sampling(data, x_0):
     sample = random.choice(data)
     sample = np.insert(sample, 0, x_0)
-    sample = sample * 11.26
-    x = sample[0:-1]
+    sample *= 11.26
+    x = sample[:-1]
     y = sample[-1]
-    return (sample, x, y)
+    return (x, y)
 
 
-def solve():
+def is_Mistake(w, x, y):
+    if y * np.dot(w, x) < 0:
+        return True
+    elif y * np.dot(w, x) == 0 and y > 0:
+        return True
+    return False
+
+
+def pla_Solve(x_0, rst):
+    cnt = 0  # update number for current train
+    data = load_data()
+    w = np.zeros(13)
+    (x, y) = sampling(data, x_0)
+
+    tmp = 0
+    while tmp <= 5 * data.shape[0]:
+        if is_Mistake(w, x, y):
+            w += y * x
+            tmp = 0
+            cnt += 1
+        else:
+            tmp += 1
+        (x, y) = sampling(data, x_0)
+    print(w)
+    rst.append(cnt)
+
+
+def main():
     rst = []  # update number for mistake correction times
+    x_0 = 1
     for i in range(1000):
-        x_0 = 1
-        w = np.zeros(13)
-        cnt = 0  # update number for current train
-        data = get_data()
-        (sample, x, y) = sampling(data, x_0)
-        # print(data)
-        # print(sample)
-
-        tmp = 0
-        while tmp <= 5 * data.shape[0]:
-            if check_mistake(w, x, y):
-                w += y * x
-                cnt += 1
-                tmp = 0
-            else:
-                tmp += 1
-            (sample, x, y) = sampling(data, x_0)
-        print(w)
-        rst.append(cnt)
+        pla_Solve(x_0, rst)
 
     # output
     print(rst)
     print(np.median(rst))
     plt.hist(rst, bins=200)
-    # plt.show()
-    plt.savefig("PLA_P10.png")
+    plt.savefig("PLA_P9.png")
 
 
 if __name__ == "__main__":
-    solve()
-
-
-# def solve(data):
+    main()

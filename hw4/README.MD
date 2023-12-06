@@ -8,7 +8,7 @@ Ensure that `python3` is installed on your device. If not, you can download it f
 Before executing any scripts, you need to install the necessary Python packages. To do so, run the following commands in your terminal:
 ```shell
 pip3 install numpy matplotlib pandas
-pip install -U liblinear-official
+pip install -U libsvm-official
 ```
 Note: If you are setting up on a different device, it's essential to ensure that these packages are installed correctly.
 
